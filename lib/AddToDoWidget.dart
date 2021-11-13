@@ -14,7 +14,7 @@ class _AddToDoWidgetState extends State<AddToDoWidget> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Add New Task',
+            'Add New Task.',
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 20,
