@@ -1,9 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:to_do_application/data/FireStoreUtils.dart';
+import 'package:to_do_application/data/ToDo.dart';
 
-class TodoWidget extends StatelessWidget {
-  const TodoWidget({Key? key}) : super(key: key);
+class TodoWidget extends StatefulWidget {
+  ToDo item;
 
+  TodoWidget(this.item);
+
+  @override
+  State<TodoWidget> createState() => _TodoWidgetState();
+}
+
+class _TodoWidgetState extends State<TodoWidget> {
   @override
   Widget build(BuildContext context) {
     return Slidable(
@@ -13,7 +22,8 @@ class TodoWidget extends StatelessWidget {
         margin: EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.only(
+              topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
         ),
         child: Row(
           children: [
@@ -30,14 +40,14 @@ class TodoWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Title',
+                      widget.item.title,
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     SizedBox(
                       height: 10,
                     ),
                     Text(
-                      'SubTitle',
+                      widget.item.description,
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
                   ],
@@ -82,9 +92,41 @@ class TodoWidget extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            deleteToDo(widget.item).then((item) {
+              Show_Message_after_Delete('ToDo Deleted Successfully');
+            }).onError((error, stackTrace) {
+              Show_Message_after_Delete(error.toString());
+            }).timeout(
+              Duration(
+                seconds: 10,
+              ),
+              onTimeout: () {
+                Show_Message_after_Delete('Time Out');
+              },
+            ); // can not connect to the sefrver
+          },
         ),
       ],
+    );
+  }
+
+  void Show_Message_after_Delete(String message) {
+    showDialog(
+      context: context,
+      builder: (buildContext) {
+        return AlertDialog(
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(buildContext);
+              },
+              child: Text('Ok'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

@@ -3,6 +3,7 @@
 
     <application
         android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         android:label="to_do_application">
         <activity
             android:name=".MainActivity"
